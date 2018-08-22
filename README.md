@@ -1,1 +1,3 @@
-# gym-new-vue
+# Quasar App
+
+> WIP
