@@ -19,7 +19,7 @@
           <div class="right-menu">
             <div class="progile-view">
               <div class="profile-name">
-                <span> Admin </span>
+                <span> {{userName}} </span>
               </div>
               <q-btn-dropdown  class="name-bt" flat round>
                 <q-list link>
@@ -45,14 +45,14 @@
         link
         inset-delimiter
       >
-        <q-list-header class="logo-title">GST Tracker</q-list-header>
+        <q-list-header class="logo-title">Matrix Gym</q-list-header>
         <q-item class="list-items" @click.native="$router.push('/admin/dashboard')">
           <q-item-side icon="dashboard" />
           <q-item-main label="Dashboard"/>
         </q-item>
-        <q-item class="list-items" @click.native="$router.push('/admin/gsttypelist')">
+        <q-item class="list-items" @click.native="$router.push('/admin/subscriptoin-list')">
           <q-item-side icon="list" />
-          <q-item-main label="GST Type" />
+          <q-item-main label="Subscription" />
         </q-item>
         <q-item class="list-items" @click.native="$router.push('/admin/stafflist')">
           <q-item-side icon="group" />
@@ -80,7 +80,8 @@ export default {
     return {
       search: '',
       leftDrawerOpen: this.$q.platform.is.desktop,
-      picture: './statics/images.png'
+      picture: './statics/images.png',
+      userName: ''
     }
   },
 
@@ -90,7 +91,9 @@ export default {
     },
 
     hideSpinner(){
-      this.$q.loading.hide();
+      setTimeout(()=>{
+        this.$q.loading.hide();
+      }, 500);
     },
   },
 
@@ -99,6 +102,8 @@ export default {
     eventHub.$on('request-error',  this.hideSpinner);
     eventHub.$on('after-response', this.hideSpinner);
     eventHub.$on('response-error', this.hideSpinner);
+    let userDetail = JSON.parse(localStorage.userDetail)
+    this.userName = userDetail.name   
   },
 
   beforeDestroy(){

@@ -22,7 +22,7 @@ module.exports = function (ctx) {
     build: {
       scopeHoisting: true,
       env: ctx.dev? {
-        API: JSON.stringify('http://dev-api.greensparkle.co.in/api/v1/')
+        API: JSON.stringify('http://api.matrix-gym.in/api/')
       }
       : {
         API: JSON.stringify(process.env.APP_API_URL)
@@ -84,6 +84,7 @@ module.exports = function (ctx) {
         'QProgress',
         'QDatetimePicker',
         'QDatetime',
+        'QTooltip'
       ],
       directives: [
         'Ripple',

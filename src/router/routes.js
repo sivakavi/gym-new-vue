@@ -20,8 +20,8 @@ export default [
       { path: 'createclient', component: () => import('pages/admin/createClient') },
       { path: 'clientprofile', component: () => import('pages/admin/clientProfile') },
       { path: 'addgsttype', component: () => import('pages/admin/addGSTType') },
-      { path: 'gsttypelist', component: () => import('pages/admin/gstTypeList') },
-      { path: 'creategsttype', component: () => import('pages/admin/createGSTType') },
+      { path: 'subscriptoin-list', component: () => import('pages/admin/subscriptionList') },
+      { path: 'create-subscription', component: () => import('pages/admin/addSubscription') },
     ]
   },
   

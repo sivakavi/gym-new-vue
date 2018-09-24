@@ -3,10 +3,10 @@
           <div class="login-form">
             <div class="icon-user"><img src="/statics/user.svg" alt=""></div>
 
-            <h3>Login</h3>
+            <h3>Matrix - Login</h3>
             <div>
               <q-field icon="person">
-                <q-input type="text"  placeholder="User id" v-model="form.username" />
+                <q-input type="text"  placeholder="Email" v-model="form.username" />
                 <span class="form-group__error" v-if="$v.form.username.$error && !$v.form.username.required">Field is required.</span>
               </q-field>
 
@@ -90,19 +90,20 @@ export default {
       api
         .post("login", requestData)
         .then(function (response) {
-          localStorage.authtoken = response.data.message
-          self.$router.push('/admin/dashboard')
+            let data = response.data.success
+            localStorage.authtoken = data.token
+            localStorage.userDetail = JSON.stringify(data.user)
+            if(data.user.roles[0].name === 'admin'){
+              self.$router.push('/admin/dashboard')
+            }
         })
         .catch(function (error) {
-          if(error.response.status == 422 || error.response.status == 401)
-          {
+            //console.log(error.response.status)
             self.$q.notify({
               position: "top",
               message: "Invalid Credentials"
             })
-          }else{
-            console.log("login fail error !!");
-          }
+            console.log("login fail error !!", error);
         });
     }
   }

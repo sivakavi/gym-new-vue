@@ -1,8 +1,8 @@
 {
   "name": "webapp-gst-tracker",
   "version": "1.0.0",
-  "description": "GST Tracker App",
-  "productName": "GST Tracker",
+  "description": "Matrix Gym",
+  "productName": "Matrix Gym",
   "cordovaId": "org.pondybiz.gsttracker",
   "author": "Sivakavi Jayadevan <sivakavi.pondybiz@gmail.com>",
   "private": true,
