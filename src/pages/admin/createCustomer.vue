@@ -2,12 +2,12 @@
   <q-page padding>
     <div class="page-view">
        <div class="page-titles">
-        <h3>Add Client <q-btn round color="black" @click="goBack" style="float:right;" icon="keyboard_backspace" /></h3>
+        <h3>Add Customer <q-btn round color="black" @click="goBack" style="float:right;" icon="keyboard_backspace" /></h3>
       </div>
        <!-- Doctor list -->
       <q-card>
         <q-card-title class="card-header">
-          Client Information
+          Customer Information
         </q-card-title>
         <q-card-separator />
         <q-card-main>
@@ -42,6 +42,7 @@
                 <div class="col-md-5">
                   <q-input class="form-input" v-model="createForm.emailId" placeholder="Email id" />
                   <span class="form-group__error" v-if="$v.createForm.emailId.$error && !$v.createForm.emailId.required">Field is required.</span>
+                  <span class="form-group__error" v-if="$v.createForm.emailId.$error && !$v.createForm.emailId.email">Invalid Email.</span>
                 </div>
               </div>
             </div>
@@ -53,83 +54,42 @@
                 <div class="col-md-5">
                   <q-input class="form-input" v-model="createForm.phoneNumber" placeholder="Phone number" />
                   <span class="form-group__error" v-if="$v.createForm.phoneNumber.$error && !$v.createForm.phoneNumber.required">Field is required.</span>
+                  <span class="form-group__error" v-if="$v.createForm.phoneNumber.$error && !$v.createForm.phoneNumber.numeric">Invalid Mobile Number.</span>
+                  <span class="form-group__error" v-if="$v.createForm.phoneNumber.$error && !$v.createForm.phoneNumber.minLength">Should be minimum 10 digit</span>
+                  <span class="form-group__error" v-if="$v.createForm.phoneNumber.$error && !$v.createForm.phoneNumber.maxLength">Should not exceed 10 digit</span>
                 </div>
               </div>
             </div>
             <div class="form-group">
               <div class="row gutter-sm">
                 <div class="col-md-3">
-                  <label class="control-label col-md-3">Staff to Assign</label>
+                  <label class="control-label col-md-3">Gender</label>
                 </div>
                 <div class="col-md-5">
-                  <q-select  class="select-input" :options="staffOption" v-model="createForm.staff"/>
-                  <span class="form-group__error" v-if="$v.createForm.staff.$error && !$v.createForm.staff.required">Field is required.</span>
+                  <q-select  class="select-input" :options="genderOption" v-model="createForm.gender"/>
+                  <span class="form-group__error" v-if="$v.createForm.gender.$error && !$v.createForm.gender.required">Field is required.</span>
                 </div>
               </div>
             </div>
             <div class="form-group">
               <div class="row gutter-sm">
                 <div class="col-md-3">
-                  <label class="control-label">Address Line 1</label>
+                  <label class="control-label col-md-3">DOB</label>
                 </div>
                 <div class="col-md-5">
-                  <q-input class="form-input" v-model="createForm.address1" placeholder="Address Line 1" />
-                  <span class="form-group__error" v-if="$v.createForm.address1.$error && !$v.createForm.address1.required">Field is required.</span>
+                  <q-datetime class="form-input" :max="maxDay" format="DD-MM-YYYY" v-model="createForm.dob"/>
+                  <span class="form-group__error" v-if="$v.createForm.dob.$error && !$v.createForm.dob.required">Field is required.</span>
                 </div>
               </div>
             </div>
             <div class="form-group">
               <div class="row gutter-sm">
                 <div class="col-md-3">
-                  <label class="control-label">Address Line 2</label>
+                  <label class="control-label col-md-3">DOJ</label>
                 </div>
                 <div class="col-md-5">
-                  <q-input class="form-input" v-model="createForm.address2" placeholder="Address Line 2" />
-                  <span class="form-group__error" v-if="$v.createForm.address2.$error && !$v.createForm.address2.required">Field is required.</span>
-                </div>
-              </div>
-            </div>
-            <div class="form-group">
-              <div class="row gutter-sm">
-                <div class="col-md-3">
-                  <label class="control-label">City</label>
-                </div>
-                <div class="col-md-5">
-                  <q-input class="form-input" v-model="createForm.city" placeholder="City" />
-                  <span class="form-group__error" v-if="$v.createForm.city.$error && !$v.createForm.city.required">Field is required.</span>
-                </div>
-              </div>
-            </div>
-            <div class="form-group">
-              <div class="row gutter-sm">
-                <div class="col-md-3">
-                  <label class="control-label">State</label>
-                </div>
-                <div class="col-md-5">
-                  <q-input class="form-input" v-model="createForm.state" placeholder="State" />
-                  <span class="form-group__error" v-if="$v.createForm.state.$error && !$v.createForm.state.required">Field is required.</span>
-                </div>
-              </div>
-            </div>
-            <div class="form-group">
-              <div class="row gutter-sm">
-                <div class="col-md-3">
-                  <label class="control-label">Country</label>
-                </div>
-                <div class="col-md-5">
-                  <q-input class="form-input" v-model="createForm.country" placeholder="Country" />
-                  <span class="form-group__error" v-if="$v.createForm.country.$error && !$v.createForm.country.required">Field is required.</span>
-                </div>
-              </div>
-            </div>
-            <div class="form-group">
-              <div class="row gutter-sm">
-                <div class="col-md-3">
-                  <label class="control-label">Pincode</label>
-                </div>
-                <div class="col-md-5">
-                  <q-input class="form-input" v-model="createForm.pincode" placeholder="Pincode" />
-                  <span class="form-group__error" v-if="$v.createForm.pincode.$error && !$v.createForm.pincode.required">Field is required.</span>
+                  <q-datetime class="form-input" format="DD-MM-YYYY" v-model="createForm.doj"/>
+                  <span class="form-group__error" v-if="$v.createForm.doj.$error && !$v.createForm.doj.required">Field is required.</span>
                 </div>
               </div>
             </div>
@@ -150,6 +110,7 @@
 
 <script>
 
+import api from 'src/services/api/api'
 import { 
     required, 
     email,
@@ -158,7 +119,6 @@ import {
     numeric,
     alpha
 } from 'vuelidate/lib/validators'
-
 import {
   alphaWithSpaceDot,
   alphaWithSpace,
@@ -168,9 +128,12 @@ import {
   alphaNumericWithDot,
   alphaNumericWithSpaceHyphen
 } from '../../services/shared/customValidation.js'
+import moment from 'moment';
 
 export default {
-  name: 'PageName',
+
+  name: 'AddCustomer',
+  
   data () {
     return {
       createForm:{
@@ -178,22 +141,24 @@ export default {
         lastName: '',
         emailId: '',
         phoneNumber: '',
-        staff: '',
-        address1: '',
-        address2: '',
-        city: '',
-        state: '',
-        country: '',
-        pincode:''
+        gender: '',
+        dob: '',
+        doj: '',
+        photo: ''
       },
-      staffOption: [
+      maxDay: '',
+      genderOption: [
         {
-          label: 'Sivakavi',
-          value: 'sivakavi'
+          label: 'Male',
+          value: 'male'
         },
         {
-          label: 'Pondybiz',
-          value: 'pondybiz'
+          label: 'Female',
+          value: 'female'
+        },
+        {
+          label: 'Others',
+          value: 'other'
         },
       ]
     }
@@ -204,11 +169,11 @@ export default {
           createForm:{
             firstName: {
               required,
-              alphaNumericWithSpace
+              alphaWithSpaceDot
             },
             lastName: {
               required,
-              alphaNumericWithSpace
+              alphaWithSpaceDot
             },
             emailId: {
               required,
@@ -216,27 +181,17 @@ export default {
             },
             phoneNumber:{
               required,
-              numeric
+              numeric,
+              maxLength: maxLength(10),
+              minLength: minLength(10)
             },
-            staff:{
+            gender:{
               required
             },
-            address1:{
+            dob:{
               required
             },
-            address2:{
-              required
-            },
-            city:{
-              required
-            },
-            state:{
-              required
-            },
-            country:{
-              required
-            },
-            pincode:{
+            doj:{
               required
             }
           }
@@ -254,14 +209,60 @@ export default {
         })
         return
       }
-      console.log(this.createForm)
+      
+      let self = this
+      let url = 'customers'
+      let requestData = {
+        "fname": this.createForm.firstName,
+        "lname": this.createForm.lastName,
+        "dob": moment(this.createForm.dob).format('YYYY-MM-DD'),
+        "mobileno": this.createForm.phoneNumber,
+        "email": this.createForm.emailId,
+        "gender": this.createForm.gender,
+        "doj": moment(this.createForm.doj).format('YYYY-MM-DD'),
+        "photo": ""
+      }
+      
+      api
+        .post(url, requestData)
+        .then(function (response) {
+          self.$q.notify({
+              position: "top",
+              timeout: 2000,
+              type: 'positive',
+              message: response.data.message
+          })
+          self.createForm = {
+            firstName: '',
+            lastName: '',
+            emailId: '',
+            phoneNumber: '',
+            gender: '',
+            dob: '',
+            doj: '',
+            photo: ''
+          }
+          self.$v.createForm.$reset()
+        })
+        .catch(function (error) {
+          self.$q.notify({
+              position: "top",
+              timeout: 2000,
+              message: 'Something went wrong !!'
+          })
+        });
     },
 
     goBack(){
-      this.$router.push('/admin/clientlist')
+      this.$router.push('/admin/customer-list')
     },
 
   },
+
+  created(){
+    let today = moment().format('YYYY-MM-DD');
+    this.maxDay = today;
+  }
  
 }
 </script>

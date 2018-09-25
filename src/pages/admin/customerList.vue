@@ -1,0 +1,162 @@
+<template>
+  <q-page padding>
+    <div class="page-view">
+       <div class="page-titles">
+        <h3>Customer</h3>
+      </div>
+      <router-link class="add-btn" to="/admin/create-customer">Add Customer</router-link>
+      <q-card>
+        <q-card-title class="card-header">
+          Customer List
+        </q-card-title>
+        <q-card-separator />
+        <q-card-main>
+          <q-table :data="customerList" :pagination.sync="pagination" :columns="customerColumns" row-key="name" class="table-view">
+                  <q-tr slot="body" slot-scope="props" :props="props">
+                    <q-td key="action" :props="props" >
+                      <q-btn round color="secondary" icon="visibility" @click="viewClient"/>
+                      &nbsp;&nbsp;
+                      <q-btn round color="amber" text-color="black" icon="edit" />
+                    </q-td>
+                    <q-td key="customer_id" :props="props" >
+                      {{props.row.regno}}
+                    </q-td>
+                    <q-td key="name" :props="props" >
+                      {{props.row.fname}} {{props.row.lname}}
+                    </q-td>
+                    <q-td key="gender" :props="props" >
+                      {{props.row.gender}}
+                    </q-td>
+                    <q-td key="doj" :props="props" >
+                      {{props.row.doj | momentDate}}
+                    </q-td>
+                    <q-td key="phone" :props="props" >
+                      {{props.row.mobileno}}
+                    </q-td>
+                    <q-td key="emailId" :props="props" >
+                      {{props.row.email}}
+                    </q-td>
+                  </q-tr>
+                </q-table>
+        </q-card-main>
+      </q-card>
+
+    </div>
+    
+  </q-page>
+</template>
+
+<script>
+
+import api from 'src/services/api/api'
+import moment from 'moment';
+
+export default {
+
+  name: 'CustomerList',
+  
+  components: {
+  
+  },
+  
+  data () {
+    return {
+      customerList: [],
+      customerColumns: [
+        {
+          name: 'action',
+          label: 'Action',
+          align: 'left',
+          sortable: false
+        },
+        {
+          name: 'customer_id',
+          label: 'ID',
+          align: 'left',
+          sortable: true
+        },
+        {
+          name: 'name',
+          label: 'Name',
+          align: 'left',
+          sortable: true
+        },
+        {
+          name: 'gender',
+          label: 'Gender',
+          align: 'left',
+          sortable: false
+        },
+        {
+          name: 'doj',
+          label: 'DOJ',
+          align: 'left',
+          sortable: false
+        },
+        {
+          name: 'phone',
+          label: 'Mobile',
+          align: 'left',
+          sortable: true
+        },
+        {
+          name: 'emailId',
+          label: 'Email Id',
+          align: 'left',
+          sortable: true
+        },
+      ],
+       pagination: {
+        sortBy: null, // String, column "name" property value
+        descending: true,
+        page: 1,
+        rowsPerPage: 10 // current rows per page being displayed
+      }
+    }
+  },
+
+  computed: {
+    
+  },
+
+  methods:{
+
+    viewClient(){
+      this.$router.push('/admin/clientprofile')
+    },
+
+    getCustomerList(){
+      let self = this;
+      api
+        .get('customers')
+        .then(function(response) {
+          self.customerList = response.data.data;
+        })
+        .catch(function(error) {
+          console.log("customer table get data error---",error);
+        });
+    },
+
+  },
+
+  filters:{
+
+    momentDate: function (date) {
+      if(date)
+        return moment(date).format('DD-MM-YYYY');
+      else
+        return date
+    },
+
+  },
+
+  created() {
+    this.getCustomerList()
+  }
+
+}
+</script>
+
+<style>
+
+</style>

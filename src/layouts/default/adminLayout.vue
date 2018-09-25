@@ -58,9 +58,9 @@
           <q-item-side icon="group" />
           <q-item-main label="Staff" />
         </q-item>
-        <q-item class="list-items" @click.native="$router.push('/admin/clientlist')">
+        <q-item class="list-items" @click.native="$router.push('/admin/customer-list')">
           <q-item-side icon="wc" />
-          <q-item-main label="Client" />
+          <q-item-main label="Customer" />
         </q-item>
       </q-list>
       </div>
