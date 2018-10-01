@@ -14,7 +14,7 @@
           <q-table :data="customerList" :pagination.sync="pagination" :columns="customerColumns" row-key="name" class="table-view">
                   <q-tr slot="body" slot-scope="props" :props="props">
                     <q-td key="action" :props="props" >
-                      <q-btn round color="secondary" icon="visibility" @click="viewClient"/>
+                      <q-btn round color="secondary" icon="visibility" @click="viewCustomer(props.row.id)"/>
                       &nbsp;&nbsp;
                       <q-btn round color="amber" text-color="black" icon="edit" />
                     </q-td>
@@ -121,8 +121,8 @@ export default {
 
   methods:{
 
-    viewClient(){
-      this.$router.push('/admin/clientprofile')
+    viewCustomer(id){
+      this.$router.push('/admin/customer/'+id)
     },
 
     getCustomerList(){
