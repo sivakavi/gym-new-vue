@@ -17,10 +17,13 @@
                  {{props.row.name}}
               </q-td>
               <q-td key="amount" :props="props" >
-                 {{props.row.amount}}
+                 {{props.row.amount | showPrice}}
               </q-td>
-              <q-td key="duration" :props="props" >
+              <!-- <q-td key="duration" :props="props" >
                  {{(props.row.duration =='1' || props.row.duration ==1) ? props.row.duration+' Month' : props.row.duration+' Months'}}
+              </q-td> -->
+              <q-td key="duration" :props="props" >
+                 {{props.row.duration}}
               </q-td>
               <q-td key="status" :props="props" >
                 <subscription-status :status="props.row.is_active"></subscription-status>
@@ -363,6 +366,23 @@ export default {
         
       })
     },
+
+  },
+
+  filters:{
+
+    showPrice: function(price){
+      if(price){
+        if(price.indexOf(".") > -1){
+          let priceArray = price.split('.')
+          return priceArray[0]
+        }else{
+          return price
+        }
+      }else{
+        return price
+      }
+    }
 
   },
 

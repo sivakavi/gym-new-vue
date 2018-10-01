@@ -87,16 +87,16 @@
                 <q-table v-if="customer.customerSubscription.length != 0" :data="customer.customerSubscription" hide-bottom :columns="subscriptoincolumns" row-key="name" class="table-view">
                   <q-tr slot="body" slot-scope="props" :props="props">
                     <q-td key="action" :props="props" >
-                      <q-btn round color="secondary" icon="visibility"/>
+                      <q-btn @click="viewSubscription(props.row)" round color="secondary" icon="visibility"/>
                     </q-td>
                     <q-td key="name" :props="props" >
                       {{props.row.name}}
                     </q-td>
                     <q-td key="amount" :props="props" >
-                      {{props.row.amount}}
+                      {{props.row.amount | showPrice}}
                     </q-td>
                     <q-td key="balance" :props="props" >
-                      {{props.row.balance}}
+                      {{props.row.balance | showPrice}}
                     </q-td>
                     <q-td key="duration" :props="props" >
                       {{props.row.months}}
@@ -115,6 +115,90 @@
         </div>
       </div>
     </div>
+
+    <q-modal no-esc-dismiss no-backdrop-dismiss class="smart-model-view" v-model="subscriptionView" :content-css="{ minWidth: '50vw'}">
+      <q-card>
+        <q-card-title class="model-header">
+          <div class="model-title">Subscription View</div>
+          <q-btn @click="subscriptionView = false" flat icon="clear" class="header-btn" color="white" slot="right"></q-btn>
+        </q-card-title>
+      <q-card-main class="model-main">
+          <div class="form-body">
+            <div class="form-group">
+                <div class="row gutter-sm">
+                  <div class="col-md-3">
+                    <label>Name : </label>
+                  </div>
+                <div class="col-md-5">
+                  <span>{{singleSubscription.name}}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+                <div class="row gutter-sm">
+                  <div class="col-md-3">
+                    <label>Amount : </label>
+                  </div>
+                <div class="col-md-5">
+                  <span>{{singleSubscription.amount | showPrice}}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+                <div class="row gutter-sm">
+                  <div class="col-md-3">
+                    <label>Balance : </label>
+                  </div>
+                <div class="col-md-5">
+                  <span>{{singleSubscription.balance | showPrice}}</span>
+                </div>
+              </div>
+            </div>
+             
+            <div class="form-group">
+                <div class="row gutter-sm">
+                  <div class="col-md-3">
+                    <label>Durations (Months) : </label>
+                  </div>
+                <div class="col-md-5">
+                  <span>{{singleSubscription.months}}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+                <div class="row gutter-sm">
+                  <div class="col-md-3">
+                    <label>Start Date : </label>
+                  </div>
+                <div class="col-md-5">
+                  <span>{{singleSubscription.doj | momentDate}}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+                <div class="row gutter-sm">
+                  <div class="col-md-3">
+                    <label>End Date : </label>
+                  </div>
+                <div class="col-md-5">
+                  <span>{{singleSubscription.doe | momentDate}}</span>
+                </div>
+              </div>
+            </div>
+        </div>
+      </q-card-main>
+      <q-card-actions class="model-footer">
+        <div>
+          
+        </div>
+      </q-card-actions>
+      </q-card>
+    </q-modal>
+
   </q-page>
 </template>
 
@@ -199,7 +283,9 @@ export default {
         descending: true,
         page: 1,
         rowsPerPage: 10
-      }
+      },
+      subscriptionView: false,
+      singleSubscription: {}
     }
   },
 
@@ -223,12 +309,17 @@ export default {
         .get('customers/'+this.customerID)
         .then(function(response) {
           self.customer = response.data.data;
-          console.log(response.data.data)
+          //console.log(response.data.data)
         })
         .catch(function(error) {
           console.log("customer get data error---",error);
         });
     },
+
+    viewSubscription(subscription){
+      this.singleSubscription = subscription
+      this.subscriptionView = true
+    }
     
   },
 
@@ -240,6 +331,19 @@ export default {
       else
         return date
     },
+
+    showPrice: function(price){
+      if(price){
+        if(price.indexOf(".") > -1){
+          let priceArray = price.split('.')
+          return priceArray[0]
+        }else{
+          return price
+        }
+      }else{
+        return price
+      }
+    }
 
   },
 
