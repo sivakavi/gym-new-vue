@@ -68,7 +68,23 @@
               </q-card-title>
               <q-card-separator />
               <q-card-main class="about">
-                <q-table :data="customer.customerSubscription" :pagination.sync="pagination" :columns="subscriptoincolumns" row-key="name" class="table-view">
+                <table v-if="customer.customerSubscription.length == 0" class="local-table-view">
+                  <tr>
+                    <th>Action</th>
+                    <th>Name</th>
+                    <th>Amount</th>
+                    <th>Balance</th>
+                    <th>Duration (Months)</th>
+                    <th>Start</th>
+                    <th>End</th>
+                  </tr>
+                  <tbody>
+                  <tr>
+                    <td colspan="7" align="center"> No Data Found</td>
+                  </tr>
+                  </tbody>
+                </table>
+                <q-table v-if="customer.customerSubscription.length != 0" :data="customer.customerSubscription" hide-bottom :columns="subscriptoincolumns" row-key="name" class="table-view">
                   <q-tr slot="body" slot-scope="props" :props="props">
                     <q-td key="action" :props="props" >
                       <q-btn round color="secondary" icon="visibility"/>
@@ -76,14 +92,20 @@
                     <q-td key="name" :props="props" >
                       {{props.row.name}}
                     </q-td>
-                    <q-td key="type" :props="props" >
-                      {{props.row.type}}
+                    <q-td key="amount" :props="props" >
+                      {{props.row.amount}}
                     </q-td>
-                    <q-td key="phone" :props="props" >
-                      {{props.row.phone}}
+                    <q-td key="balance" :props="props" >
+                      {{props.row.balance}}
                     </q-td>
-                    <q-td key="emailId" :props="props" >
-                      {{props.row.emailId}}
+                    <q-td key="duration" :props="props" >
+                      {{props.row.months}}
+                    </q-td>
+                    <q-td key="start" :props="props" >
+                      {{props.row.doj | momentDate}}
+                    </q-td>
+                    <q-td key="end" :props="props" >
+                      {{props.row.doe | momentDate}}
                     </q-td>
                   </q-tr>
                 </q-table>
@@ -142,28 +164,34 @@ export default {
           align: 'left',
         },
         {
-          name: 'type',
+          name: 'amount',
           required: true,
-          label: 'Type',
+          label: 'Amount',
           align: 'left',
-          field: 'type',
-          sortable: false
         },
         {
-          name: 'phone',
+          name: 'balance',
           required: true,
-          label: 'Phone number',
+          label: 'Balance',
           align: 'left',
-          field: 'phone',
-          sortable: true
         },
         {
-          name: 'emailId',
+          name: 'duration',
           required: true,
-          label: 'Email id',
+          label: 'Duration (Months)',
           align: 'left',
-          field: 'emailId',
-          sortable: true
+        },
+        {
+          name: 'start',
+          required: true,
+          label: 'Start',
+          align: 'left',
+        },
+        {
+          name: 'end',
+          required: true,
+          label: 'End',
+          align: 'left',
         },
       ],
        pagination: {
