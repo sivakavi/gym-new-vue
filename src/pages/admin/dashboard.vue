@@ -12,8 +12,8 @@
                 <q-icon name="wc" color="white" size="40px"/>
               </span>
               <div class="info-box-content">
-                <span class="info-box-text">Client</span>
-                <span class="info-box-number">450</span>
+                <span class="info-box-text">Customer</span>
+                <span class="info-box-number">{{customerCount}}</span>
               </div>
             </div>
           </div>
@@ -23,8 +23,8 @@
                 <q-icon name="list" color="white" size="40px"/>
               </span>
               <div class="info-box-content">
-                <span class="info-box-text">GST Type</span>
-                <span class="info-box-number">4</span>
+                <span class="info-box-text">Upcoming Expiration</span>
+                <span class="info-box-number">{{upcomingExpireCount}}</span>
               </div>
             </div>
           </div>
@@ -35,7 +35,7 @@
               </span>
               <div class="info-box-content">
                 <span class="info-box-text">Staff</span>
-                <span class="info-box-number">10</span>
+                <span class="info-box-number">{{staffCount}}</span>
               </div>
             </div>
           </div>
@@ -45,29 +45,29 @@
        <!-- Satff list -->
       <q-card>
         <q-card-title class="card-header">
-          Notification : Due Client List
+          Upcoming Customer Expiration
         </q-card-title>
         <q-card-separator />
         <q-card-main>
-          <q-table :data="clietnListTableData" :pagination.sync="pagination" :columns="clientcolumns" :hide-bottom= true row-key="name" class="table-view">
+          <q-table :data="upcomingExpireList" :pagination.sync="pagination" :columns="upcomingExpireColumns" row-key="name" class="table-view">
              <q-tr slot="body" slot-scope="props" :props="props">
-              <q-td key="serial" :props="props" >
-                 {{props.row.serial}}
+              <q-td key="action" :props="props" >
+                 <q-btn @click="viewCustomer(props.row.customer_id)" round color="secondary" icon="visibility"/>
+              </q-td>
+              <q-td key="regNo" :props="props" >
+                 {{props.row.regno}}
               </q-td>
               <q-td key="name" :props="props" >
                  {{props.row.name}}
               </q-td>
-              <q-td key="type" :props="props" >
-                 {{props.row.type}}
-              </q-td>
-              <q-td key="date" :props="props" >
-                 {{props.row.date}}
+              <q-td key="endDate" :props="props" >
+                 {{props.row.Subscription_Ends}}
               </q-td>
               <q-td key="phone" :props="props" >
-                 {{props.row.phone}}
+                 {{props.row.mobileno}}
               </q-td>
                <q-td key="emailId" :props="props" >
-                 {{props.row.emailId}}
+                 {{props.row.email}}
               </q-td>
              </q-tr>
           </q-table>
@@ -87,54 +87,45 @@ export default {
   },
   data () {
     return {
-      clientcolumns: [
+      upcomingExpireCount: 0,
+      upcomingExpireList: [],
+      customerCount: 0,
+      staffCount: 0,
+      upcomingExpireColumns: [
         {
-          name: 'serial',
-          required: true,
-          label: 'Sl No',
+          name: 'action',
+          label: 'Action',
           align: 'left',
-          field: 'serial',
-          sortable: false
+        },
+        {
+          name: 'regNo',
+          required: true,
+          label: 'Reg. No',
+          align: 'left',
         },
         {
           name: 'name',
           required: true,
           label: 'Name',
           align: 'left',
-          field: 'name',
-          sortable: true
         },
         {
-          name: 'type',
+          name: 'endDate',
           required: true,
-          label: 'GST Type',
+          label: 'Expire Date',
           align: 'left',
-          field: 'type',
-          sortable: true
-        },
-        {
-          name: 'date',
-          required: true,
-          label: 'Due Date',
-          align: 'left',
-          field: 'date',
-          sortable: true
         },
         {
           name: 'phone',
           required: true,
-          label: 'Phone number',
+          label: 'Mobile',
           align: 'left',
-          field: 'phone',
-          sortable: true
         },
         {
           name: 'emailId',
           required: true,
           label: 'Email id',
           align: 'left',
-          field: 'emailId',
-          sortable: true
         },
       ],
        pagination: {
@@ -146,18 +137,41 @@ export default {
     }
   },
 
-  computed: {
+  methods:{
 
-    clietnListTableData() {
-       var clientArr = [
-        {serial: 1, name: "Jackques Nelson", type: "GST Type 2", date: "20-08-2018", phone: +984469388638, emailId: "micheal@gmail.com"},
-        {serial: 2, name: "Erich Mcbride", type: "GST Type 5", date: "20-08-2018", phone: +984469388638, emailId: "erich@gmail.com"},
-        {serial: 3, name: "Jennifer Lopez", type: "GST Type 1", date: "20-08-2018", phone: +984469388638, emailId: "chris@gmail.com"},
-        {serial: 4, name: "Jackques Nelson", type: "GST Type 1", date: "20-08-2018", phone: +984469388638, emailId: "samuel@gmail.com"},
-        {serial: 5, name: "Jonny Ive", type: "GST Type 1", date: "20-08-2018", phone: +984469388638, emailId: "sophie@gmail.com"},
-      ];
-      return clientArr;
-    }
+    viewCustomer(id){
+      this.$router.push('/admin/customer/'+id)
+    },
+
+    getCustomerList(){
+      let self = this;
+      api
+        .get('customers')
+        .then(function(response) {
+          let customerList = response.data.data;
+          self.customerCount = customerList.length
+        })
+        .catch(function(error) {
+          console.log("customer table get data error---",error);
+        });
+    },
+
+    getExpiringCustomerList(){
+      let self = this;
+      api
+        .get('getSubscriptionExpire')
+        .then(function(response) {
+          self.upcomingExpireList = response.data.data;
+          self.upcomingExpireCount = self.upcomingExpireList.length
+        })
+        .catch(function(error) {
+          console.log("customer table get data error---",error);
+        });
+    },
+
+  },
+
+  computed: {
 
   }
 
