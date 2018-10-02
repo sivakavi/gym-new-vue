@@ -513,8 +513,14 @@ export default {
       }
 
       //console.log(requestData)
-      
-      api
+
+      this.$q.dialog({
+        title: 'Confirm',
+        message: 'Do you want to add subscription to this customer ?',
+        ok: 'Agree',
+        cancel: 'Disagree'
+      }).then(() => {
+        api
         .post(url, requestData)
         .then(function (response) {
           self.$q.notify({
@@ -535,7 +541,10 @@ export default {
             })
           }
         });
-    }
+      }).catch(() => {
+        
+      })
+    },
     
   },
 

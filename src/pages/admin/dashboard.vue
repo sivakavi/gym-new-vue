@@ -61,7 +61,38 @@
                  {{props.row.name}}
               </q-td>
               <q-td key="endDate" :props="props" >
-                 {{props.row.Subscription_Ends}}
+                 {{props.row.doe | momentDate}}
+              </q-td>
+              <q-td key="phone" :props="props" >
+                 {{props.row.mobileno}}
+              </q-td>
+               <q-td key="emailId" :props="props" >
+                 {{props.row.email}}
+              </q-td>
+             </q-tr>
+          </q-table>
+        </q-card-main>
+      </q-card>
+
+      <q-card>
+        <q-card-title class="card-header">
+          Birthday Reminder
+        </q-card-title>
+        <q-card-separator />
+        <q-card-main>
+          <q-table :data="birthdayReminderList" :pagination.sync="pagination" :columns="birthdayReminderColumns" row-key="name" class="table-view">
+             <q-tr slot="body" slot-scope="props" :props="props">
+              <q-td key="action" :props="props" >
+                 <q-btn @click="viewCustomer(props.row.id)" round color="secondary" icon="visibility"/>
+              </q-td>
+              <q-td key="regNo" :props="props" >
+                 {{props.row.regno}}
+              </q-td>
+              <q-td key="name" :props="props" >
+                 {{props.row.fname}} {{props.row.lname}}
+              </q-td>
+              <q-td key="dob" :props="props" >
+                 {{props.row.dob | momentDate}}
               </q-td>
               <q-td key="phone" :props="props" >
                  {{props.row.mobileno}}
@@ -81,16 +112,61 @@
 
 <script>
 
+import api from 'src/services/api/api'
+import moment from 'moment';
+
 export default {
-  name: 'PageName',
+
+  name: 'AdminDashboard',
+  
   components: {
+  
   },
+  
   data () {
     return {
       upcomingExpireCount: 0,
       upcomingExpireList: [],
+      birthdayReminderList: [],
       customerCount: 0,
       staffCount: 0,
+      birthdayReminderColumns: [
+        {
+          name: 'action',
+          label: 'Action',
+          align: 'left',
+        },
+        {
+          name: 'regNo',
+          required: true,
+          label: 'Reg. No',
+          align: 'left',
+        },
+        {
+          name: 'name',
+          required: true,
+          label: 'Name',
+          align: 'left',
+        },
+        {
+          name: 'dob',
+          required: true,
+          label: 'DOB',
+          align: 'left',
+        },
+        {
+          name: 'phone',
+          required: true,
+          label: 'Mobile',
+          align: 'left',
+        },
+        {
+          name: 'emailId',
+          required: true,
+          label: 'Email id',
+          align: 'left',
+        },
+      ],
       upcomingExpireColumns: [
         {
           name: 'action',
@@ -165,7 +241,19 @@ export default {
           self.upcomingExpireCount = self.upcomingExpireList.length
         })
         .catch(function(error) {
-          console.log("customer table get data error---",error);
+          console.log("customer expiring table get data error---",error);
+        });
+    },
+
+    getBirthdayReminderList(){
+      let self = this;
+      api
+        .get('getBirthDayRemainder')
+        .then(function(response) {
+          self.birthdayReminderList = response.data.data;
+        })
+        .catch(function(error) {
+          console.log("customer dob table get data error---",error);
         });
     },
 
@@ -173,6 +261,23 @@ export default {
 
   computed: {
 
+  },
+
+  filters:{
+
+    momentDate: function (date) {
+      if(date)
+        return moment(date).format('DD-MM-YYYY');
+      else
+        return date
+    },
+
+  },
+
+  created(){
+    this.getCustomerList()
+    this.getExpiringCustomerList()
+    this.getBirthdayReminderList()
   }
 
 }

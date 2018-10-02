@@ -93,7 +93,8 @@ export default {
             let data = response.data.success
             localStorage.authtoken = data.token
             localStorage.userDetail = JSON.stringify(data.user)
-            if(data.user.roles[0].name === 'admin'){
+            //if(data.user.roles[0].name === 'admin'){
+            if(data.role === 'admin'){
               self.$router.push('/admin/dashboard')
             }
         })
