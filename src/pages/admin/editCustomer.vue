@@ -2,7 +2,7 @@
   <q-page padding>
     <div class="page-view">
        <div class="page-titles">
-        <h3>Add Customer <q-btn round color="black" @click="goBack" style="float:right;" icon="keyboard_backspace" /></h3>
+        <h3>Edit Customer <q-btn round color="black" @click="goBack" style="float:right;" icon="keyboard_backspace" /></h3>
       </div>
        <!-- Doctor list -->
       <q-card>
@@ -99,7 +99,7 @@
               <div class="col-md-3">
               </div>
               <div class="col-md-5">
-                 <q-btn @click="createCustomer" class="add-btn">Create Customer</q-btn>
+                 <q-btn @click="editCustomer" class="add-btn">Edit Customer</q-btn>
               </div>
             </div>
           </div>
@@ -138,6 +138,7 @@ export default {
   
   data () {
     return {
+      customerID: '',
       createForm:{
         firstName: '',
         lastName: '',
@@ -202,7 +203,7 @@ export default {
 
   methods:{
 
-    createCustomer(){
+    editCustomer(){
       this.$v.createForm.$touch()
       if (this.$v.createForm.$error) {
         this.$q.notify({
@@ -213,7 +214,7 @@ export default {
       }
       
       let self = this
-      let url = 'customers'
+      let url = 'customers/'+this.customerID
       let requestData = {
         "fname": this.createForm.firstName,
         "lname": this.createForm.lastName,
@@ -226,7 +227,7 @@ export default {
       }
       
       api
-        .post(url, requestData)
+        .put(url, requestData)
         .then(function (response) {
           self.$q.notify({
               position: "top",
@@ -234,17 +235,6 @@ export default {
               type: 'positive',
               message: response.data.message
           })
-          self.createForm = {
-            firstName: '',
-            lastName: '',
-            emailId: '',
-            phoneNumber: '',
-            gender: '',
-            dob: '',
-            doj: '',
-            photo: ''
-          }
-          self.$v.createForm.$reset()
         })
         .catch(function (error) {
           self.$q.notify({
@@ -259,11 +249,35 @@ export default {
       this.$router.push('/admin/customer-list')
     },
 
+    getCustomer(){
+      let self = this;
+      api
+        .get('customers/'+this.customerID)
+        .then(function(response) {
+          let data = response.data.data
+          self.createForm = {
+            firstName: data.fname,
+            lastName: data.lname,
+            emailId: data.email,
+            phoneNumber: data.mobileno,
+            gender: data.gender,
+            dob: data.dob,
+            doj: data.doj,
+            photo: ''
+          }
+        })
+        .catch(function(error) {
+          console.log("customer get data error---",error);
+        });
+    },
+
   },
 
   created(){
     let today = moment().format('YYYY-MM-DD');
     this.maxDay = today;
+    this.customerID = this.$route.params.id;
+    this.getCustomer()
   }
  
 }

@@ -17,6 +17,7 @@ export default [
       { path: 'createstaff', component: () => import('pages/admin/createStaff') },
       { path: 'customer-list', component: () => import('pages/admin/customerList') },
       { path: 'create-customer', component: () => import('pages/admin/createCustomer') },
+      { path: 'edit-customer/:id', component: () => import('pages/admin/editCustomer') },
       { path: 'customer/:id', component: () => import('pages/admin/customerProfile') },
       { path: 'subscriptoin-list', component: () => import('pages/admin/subscriptionList') },
       { path: 'create-subscription', component: () => import('pages/admin/addSubscription') },

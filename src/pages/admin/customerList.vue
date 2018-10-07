@@ -16,7 +16,7 @@
                     <q-td key="action" :props="props" >
                       <q-btn round color="secondary" icon="visibility" @click="viewCustomer(props.row.id)"/>
                       &nbsp;&nbsp;
-                      <q-btn round color="amber" text-color="black" icon="edit" />
+                      <q-btn round color="amber" text-color="black" icon="edit" @click="editCustomer(props.row.id)" />
                     </q-td>
                     <q-td key="customer_id" :props="props" >
                       {{props.row.regno}}
@@ -123,6 +123,10 @@ export default {
 
     viewCustomer(id){
       this.$router.push('/admin/customer/'+id)
+    },
+
+    editCustomer(id){
+      this.$router.push('/admin/edit-customer/'+id)
     },
 
     getCustomerList(){
