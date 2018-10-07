@@ -105,6 +105,18 @@
         </q-card-main>
       </q-card>
 
+      <!-- <q-card>
+        <q-card-title class="card-header">
+          Chart
+        </q-card-title>
+        <q-card-separator />
+        <q-card-main>
+          <div>
+          <customer-chart/>
+          </div>
+        </q-card-main>
+      </q-card> -->
+
     </div>
 
   </q-page>
@@ -115,12 +127,14 @@
 import api from 'src/services/api/api'
 import moment from 'moment';
 
+//import CustomerChart from 'src/components/charts/bar.vue'
+
 export default {
 
   name: 'AdminDashboard',
   
   components: {
-  
+    //CustomerChart
   },
   
   data () {
