@@ -88,6 +88,8 @@
                   <q-tr slot="body" slot-scope="props" :props="props">
                     <q-td key="action" :props="props" >
                       <q-btn @click="viewSubscription(props.row)" round color="secondary" icon="visibility"/>
+                      &nbsp;&nbsp;
+                      <q-btn v-if="props.row.balance != '0.00'" @click="addPayment(props.row)" round color="purple-12" icon="attach_money"/>
                     </q-td>
                     <q-td key="name" :props="props" >
                       {{props.row.name}}
@@ -277,6 +279,48 @@
       </q-card>
     </q-modal>
 
+    <q-modal no-esc-dismiss no-backdrop-dismiss class="smart-model-view" v-model="paymentAddView" :content-css="{ minWidth: '50vw'}">
+      <q-card>
+        <q-card-title class="model-header">
+          <div class="model-title"> Subscription - Payment (Balance : {{singleSubscription.balance | showPrice}})</div>
+          <q-btn @click="paymentAddView = false" flat icon="clear" class="header-btn" color="white" slot="right"></q-btn>
+        </q-card-title>
+        <q-card-main class="model-main">
+          <div class="form-body">
+            <div class="form-group">
+              <div class="row gutter-sm">
+                <div class="col-md-4">
+                  <label class="control-label">Amount</label>
+                </div>
+                <div class="col-md-6">
+                  <q-input class="form-input" v-model="paymentAmount"/>
+                  <span class="form-group__error" v-if="$v.paymentAmount.$error && !$v.paymentAmount.required">Field is required.</span>
+                  <span class="form-group__error" v-if="$v.paymentAmount.$error && !$v.paymentAmount.numericWithDot">Accept numeric value only.</span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="row gutter-sm">
+                <div class="col-md-4">
+                  <label class="control-label">Paid On </label>
+                </div>
+                <div class="col-md-6">
+                  <q-datetime class="form-input"  :max="maxDay" format="DD-MM-YYYY" inverted color="light-blue" :first-day-of-week="1" v-model="paymentDate"/>
+                  <span class="form-group__error" v-if="$v.paymentDate.$error && !$v.paymentDate.required">Field is required.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        
+        </q-card-main>
+       <q-card-actions class="model-footer border-1px">
+          <div style="width: 100%">
+              <q-btn @click="payPayment" class="add-btn float-right">&nbsp;&nbsp;&nbsp; Pay &nbsp;&nbsp;&nbsp;</q-btn>
+          </div>
+        </q-card-actions>
+      </q-card>
+    </q-modal>
+
   </q-page>
 </template>
 
@@ -310,6 +354,7 @@ export default {
   },
   data () {
     return {
+      maxDay: '',
       malePicture: './statics/male-avatar.png',
       otherPicture: './statics/other-avatar.png',
       femalePicture: './statics/female-avatar.png',
@@ -390,12 +435,15 @@ export default {
       subscriptionAmount: '',
       subscriptionDuration: '',
       subscriptionStart: '',
-      subscriptionEnd: ''
+      subscriptionEnd: '',
+      paymentAddView: false,
+      paymentAmount: '',
+      paymentDate: '',
     }
   },
 
   computed: {
-    
+   
   },
 
   validations(){
@@ -404,9 +452,17 @@ export default {
               required
             },
             subscriptionAmount:{
-              required
+              required,
+              numericWithDot
             },
             subscriptionStart:{
+              required
+            },
+            paymentAmount:{
+              required,
+              numericWithDot
+            },
+            paymentDate:{
               required
             },
       }
@@ -446,6 +502,15 @@ export default {
     viewSubscription(subscription){
       this.singleSubscription = subscription
       this.subscriptionView = true
+    },
+
+    addPayment(subscription){
+      this.singleSubscription = subscription
+      this.paymentAmount = ''
+      this.$v.paymentAmount.$reset()
+      let today = moment().format('YYYY-MM-DD');
+      this.paymentDate = today;
+      this.paymentAddView = true
     },
 
     getSubscriptionList(){
@@ -545,6 +610,61 @@ export default {
         
       })
     },
+
+    payPayment(){
+      this.$v.paymentAmount.$touch()
+      this.$v.paymentDate.$touch()
+      if (this.$v.paymentAmount.$error || this.$v.paymentDate.$error) {
+        this.$q.notify({
+          position: "top",
+          message: "Please review fields again."
+        })
+        return
+      }
+      
+      let self = this
+      let url = "payments"
+      let requestData = {
+        customer_subscription_id: ""+this.singleSubscription.id,
+        customer_id: this.customerID,
+        amount: this.paymentAmount,
+        paid_at: moment(this.paymentDate).format('YYYY-MM-DD')
+      }
+
+      console.log(requestData)
+      console.log(this.singleSubscription.balance)
+
+      this.$q.dialog({
+        title: 'Confirm',
+        message: 'Do you want to add subscription to this customer ?',
+        ok: 'Agree',
+        cancel: 'Disagree'
+      }).then(() => {
+        // api
+        // .post(url, requestData)
+        // .then(function (response) {
+        //   self.$q.notify({
+        //       position: "top",
+        //       type: 'positive',
+        //       timeout: 2000,
+        //       message: response.data.message
+        //   })
+        //   self.getCustomer()
+        //   self.paymentAddView = false
+        // })
+        // .catch(function (error) {
+        //   if(!error.response.data.success){
+        //     self.$q.notify({
+        //       position: "top",
+        //       timeout: 2000,
+        //       message: error.response.data.message
+        //     })
+        //   }
+        // });
+      }).catch(() => {
+        
+      })
+    }
     
   },
 
@@ -574,6 +694,9 @@ export default {
 
   created(){
     this.customerID = this.$route.params.id;
+    let today = moment().format('YYYY-MM-DD');
+    this.maxDay = today;
+    this.paymentDate = today;
     this.getCustomer()
     this.getSubscriptionList()
   }
