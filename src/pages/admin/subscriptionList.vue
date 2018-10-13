@@ -79,7 +79,7 @@
                   <label class="control-label">Duration (Months)</label>
                 </div>
                 <div class="col-md-5">
-                  <q-select class="form-input" v-model="subscriptionDuration" :options="subscriptionDurationOptions"/>
+                  <q-select :disable="true" class="form-input" v-model="subscriptionDuration" :options="subscriptionDurationOptions"/>
                 </div>
               </div>
             </div>

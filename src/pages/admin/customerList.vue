@@ -11,7 +11,13 @@
         </q-card-title>
         <q-card-separator />
         <q-card-main>
-          <q-table :data="customerList" :pagination.sync="pagination" :columns="customerColumns" row-key="name" class="table-view">
+          <q-table :filter="filter" :data="customerList" :pagination.sync="pagination" :columns="customerColumns" row-key="name" class="table-view">
+                  <template slot="top-right" slot-scope="props">
+                    <q-search
+                      color="dark"
+                      v-model="filter"
+                    />
+                  </template>
                   <q-tr slot="body" slot-scope="props" :props="props">
                     <q-td key="action" :props="props" >
                       <q-btn round color="secondary" icon="visibility" @click="viewCustomer(props.row.id)"/>
@@ -62,6 +68,7 @@ export default {
   data () {
     return {
       customerList: [],
+      filter: '',
       customerColumns: [
         {
           name: 'action',
@@ -73,12 +80,14 @@ export default {
           name: 'customer_id',
           label: 'ID',
           align: 'left',
+          field: 'regno',
           sortable: true
         },
         {
           name: 'name',
           label: 'Name',
           align: 'left',
+          field: 'fname',
           sortable: true
         },
         {
@@ -162,5 +171,9 @@ export default {
 </script>
 
 <style>
+
+.q-table-top{
+  padding-bottom: 30px;
+}
 
 </style>

@@ -621,6 +621,14 @@ export default {
         })
         return
       }
+
+      if(parseFloat(this.paymentAmount) > parseFloat(this.singleSubscription.balance)){
+        this.$q.notify({
+          position: "top",
+          message: "Please check entered amount, It is greater than balance amount."
+        })
+        return
+      }
       
       let self = this
       let url = "payments"
@@ -631,36 +639,33 @@ export default {
         paid_at: moment(this.paymentDate).format('YYYY-MM-DD')
       }
 
-      console.log(requestData)
-      console.log(this.singleSubscription.balance)
-
       this.$q.dialog({
         title: 'Confirm',
         message: 'Do you want to add subscription to this customer ?',
         ok: 'Agree',
         cancel: 'Disagree'
       }).then(() => {
-        // api
-        // .post(url, requestData)
-        // .then(function (response) {
-        //   self.$q.notify({
-        //       position: "top",
-        //       type: 'positive',
-        //       timeout: 2000,
-        //       message: response.data.message
-        //   })
-        //   self.getCustomer()
-        //   self.paymentAddView = false
-        // })
-        // .catch(function (error) {
-        //   if(!error.response.data.success){
-        //     self.$q.notify({
-        //       position: "top",
-        //       timeout: 2000,
-        //       message: error.response.data.message
-        //     })
-        //   }
-        // });
+        api
+        .post(url, requestData)
+        .then(function (response) {
+          self.$q.notify({
+              position: "top",
+              type: 'positive',
+              timeout: 2000,
+              message: response.data.message
+          })
+          self.getCustomer()
+          self.paymentAddView = false
+        })
+        .catch(function (error) {
+          if(!error.response.data.success){
+            self.$q.notify({
+              position: "top",
+              timeout: 2000,
+              message: error.response.data.message
+            })
+          }
+        });
       }).catch(() => {
         
       })

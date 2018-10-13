@@ -18,8 +18,8 @@
               </q-field>
             </div>
             <div class="forget">
-                <q-checkbox  indeterminate v-model="check2" color="secondary" label="Remember me" />
-                <span>Forgot password</span>
+                <!-- <q-checkbox  indeterminate v-model="check2" color="secondary" label="Remember me" />
+                <span>Forgot password</span> -->
             </div>
             <div class="login-area">
               <q-field>

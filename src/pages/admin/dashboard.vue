@@ -6,7 +6,7 @@
       </div>
       <div class="state-overview">
         <div class="row gutter-sm">
-          <div class="col-lg-4 col-md-6 col-sm-6">
+          <div @click="gotoCustomer" class="col-lg-4 col-md-6 col-sm-6 hand-symbol">
             <div class="info-box bg-blue">
               <span class="info-box-icon push-bottom">
                 <q-icon name="wc" color="white" size="40px"/>
@@ -28,7 +28,7 @@
               </div>
             </div>
           </div>
-           <div class="col-lg-4 col-md-6 col-sm-6">
+           <div @click="gotoStaff" class="col-lg-4 col-md-6 col-sm-6 hand-symbol">
             <div class="info-box bg-green">
               <span class="info-box-icon push-bottom">
                 <q-icon name="people" color="white" size="40px"/>
@@ -233,6 +233,14 @@ export default {
       this.$router.push('/admin/customer/'+id)
     },
 
+    gotoCustomer(){
+      this.$router.push('/admin/customer-list')
+    },
+
+    gotoStaff(){
+      this.$router.push('/admin/stafflist')
+    },
+
     getCustomerList(){
       let self = this;
       api
@@ -243,6 +251,19 @@ export default {
         })
         .catch(function(error) {
           console.log("customer table get data error---",error);
+        });
+    },
+
+    getStaffList(){
+      let self = this;
+      api
+        .get('getAllUser')
+        .then(function(response) {
+          let staffList = response.data.data
+          self.staffCount = staffList.length ;
+        })
+        .catch(function(error) {
+          console.log("staff table get data error---",error);
         });
     },
 
@@ -290,6 +311,7 @@ export default {
 
   created(){
     this.getCustomerList()
+    this.getStaffList()
     this.getExpiringCustomerList()
     this.getBirthdayReminderList()
   }
@@ -298,5 +320,9 @@ export default {
 </script>
 
 <style>
+
+.hand-symbol{
+  cursor: pointer;
+}
 
 </style>
