@@ -85,7 +85,7 @@
                       </tr>
                       </tbody>
                     </table>
-                    <q-table v-if="customer.customerSubscription.length != 0" :data="customer.customerSubscription" hide-bottom :columns="subscriptoincolumns" row-key="name" class="table-view">
+                    <q-table v-if="customer.customerSubscription.length != 0" :data="customer.customerSubscription" hide-bottom :pagination="pagination" :columns="subscriptoincolumns" row-key="name" class="table-view">
                       <q-tr slot="body" slot-scope="props" :props="props">
                         <q-td key="action" :props="props" >
                           <q-btn @click="viewSubscription(props.row)" round color="secondary" icon="visibility"/>
@@ -137,7 +137,7 @@
                       </tr>
                       </tbody>
                     </table>
-                    <q-table v-if="customer.payment.length != 0" :data="customer.payment" hide-bottom :columns="paymentcolumns" row-key="name" class="table-view">
+                    <q-table v-if="customer.payment.length != 0" :data="customer.payment" hide-bottom :pagination="pagination" :columns="paymentcolumns" row-key="name" class="table-view">
                       <q-tr slot="body" slot-scope="props" :props="props">
                         <q-td key="action" :props="props" >
                           <q-btn @click="viewPayment(props.row)" round color="black" icon="print"/>
@@ -491,11 +491,9 @@ export default {
           align: 'left',
         }
       ],
-       pagination: {
-        sortBy: null,
-        descending: true,
+      pagination: {
         page: 1,
-        rowsPerPage: 10
+        rowsPerPage: ''
       },
       subscriptionView: false,
       singleSubscription: {},

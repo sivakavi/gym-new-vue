@@ -10,7 +10,7 @@
         </q-card-title>
         <q-card-separator />
         <q-card-main>
-          <q-table :data="subscriptionList" :columns="subscriptionColumns" :hide-bottom=true row-key="name" class="table-view">
+          <q-table :data="subscriptionList" :columns="subscriptionColumns" hide-bottom :pagination="pagination" row-key="name" class="table-view">
              <q-tr slot="body" slot-scope="props" :props="props">
               <q-td key="name" :props="props" >
                  {{props.row.name}}
@@ -94,7 +94,11 @@ export default {
           label: 'Status',
           align: 'left',
         }
-      ]
+      ],
+      pagination: {
+        page: 1,
+        rowsPerPage: ''
+      },
     }
   },
 
