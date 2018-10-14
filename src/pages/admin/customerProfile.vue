@@ -60,62 +60,107 @@
           </div>
         </div>
         <div class="col-sm-12 col-lg-8">
-          <!-- today consultancy  -->
-          <div class="test-view">
-             <q-card>
-              <q-card-title class="card-header">
-                Subscriptions  <q-btn color="purple" style="float:right;" @click="addSubscription" label="Add Subscription" />
-              </q-card-title>
-              <q-card-separator />
-              <q-card-main class="about">
-                <table v-if="customer.customerSubscription.length == 0" class="local-table-view">
-                  <tr>
-                    <th>Action</th>
-                    <th>Name</th>
-                    <th>Amount</th>
-                    <th>Balance</th>
-                    <th>Duration (Months)</th>
-                    <th>Start</th>
-                    <th>End</th>
-                  </tr>
-                  <tbody>
-                  <tr>
-                    <td colspan="7" align="center"> No Data Found</td>
-                  </tr>
-                  </tbody>
-                </table>
-                <q-table v-if="customer.customerSubscription.length != 0" :data="customer.customerSubscription" hide-bottom :columns="subscriptoincolumns" row-key="name" class="table-view">
-                  <q-tr slot="body" slot-scope="props" :props="props">
-                    <q-td key="action" :props="props" >
-                      <q-btn @click="viewSubscription(props.row)" round color="secondary" icon="visibility"/>
-                      &nbsp;&nbsp;
-                      <q-btn v-if="props.row.balance != '0.00'" @click="addPayment(props.row)" round color="purple-12" icon="attach_money"/>
-                    </q-td>
-                    <q-td key="name" :props="props" >
-                      {{props.row.name}}
-                    </q-td>
-                    <q-td key="amount" :props="props" >
-                      {{props.row.amount | showPrice}}
-                    </q-td>
-                    <q-td key="balance" :props="props" >
-                      {{props.row.balance | showPrice}}
-                    </q-td>
-                    <q-td key="duration" :props="props" >
-                      {{props.row.months}}
-                    </q-td>
-                    <q-td key="start" :props="props" >
-                      {{props.row.doj | momentDate}}
-                    </q-td>
-                    <q-td key="end" :props="props" >
-                      {{props.row.doe | momentDate}}
-                    </q-td>
-                  </q-tr>
-                </q-table>
-              </q-card-main>
-            </q-card>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="test-view">
+                <q-card>
+                  <q-card-title class="card-header">
+                    Subscriptions  <q-btn color="purple" style="float:right;" @click="addSubscription" label="Add Subscription" />
+                  </q-card-title>
+                  <q-card-separator />
+                  <q-card-main class="about">
+                    <table v-if="customer.customerSubscription.length == 0" class="local-table-view">
+                      <tr>
+                        <th>Action</th>
+                        <th>Name</th>
+                        <th>Amount</th>
+                        <th>Balance</th>
+                        <th>Duration (Months)</th>
+                        <th>Start</th>
+                        <th>End</th>
+                      </tr>
+                      <tbody>
+                      <tr>
+                        <td colspan="7" align="center"> No Data Found </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                    <q-table v-if="customer.customerSubscription.length != 0" :data="customer.customerSubscription" hide-bottom :columns="subscriptoincolumns" row-key="name" class="table-view">
+                      <q-tr slot="body" slot-scope="props" :props="props">
+                        <q-td key="action" :props="props" >
+                          <q-btn @click="viewSubscription(props.row)" round color="secondary" icon="visibility"/>
+                          &nbsp;&nbsp;
+                          <q-btn v-if="props.row.balance != '0.00'" @click="addPayment(props.row)" round color="purple-12" icon="attach_money"/>
+                        </q-td>
+                        <q-td key="name" :props="props" >
+                          {{props.row.name}}
+                        </q-td>
+                        <q-td key="amount" :props="props" >
+                          {{props.row.amount | showPrice}}
+                        </q-td>
+                        <q-td key="balance" :props="props" >
+                          {{props.row.balance | showPrice}}
+                        </q-td>
+                        <q-td key="duration" :props="props" >
+                          {{props.row.months}}
+                        </q-td>
+                        <q-td key="start" :props="props" >
+                          {{props.row.doj | momentDate}}
+                        </q-td>
+                        <q-td key="end" :props="props" >
+                          {{props.row.doe | momentDate}}
+                        </q-td>
+                      </q-tr>
+                    </q-table>
+                  </q-card-main>
+                </q-card>
+              </div>              
+            </div>
+            <div class="col-lg-12">
+              <div class="test-view">
+                <q-card>
+                  <q-card-title class="card-header">
+                    Payment History
+                  </q-card-title>
+                  <q-card-separator />
+                  <q-card-main class="about">
+                    <table v-if="customer.payment.length == 0" class="local-table-view">
+                      <tr>
+                        <th>Action</th>
+                        <th>Name</th>
+                        <th>Amount</th>
+                        <th>Paid On</th>
+                      </tr>
+                      <tbody>
+                      <tr>
+                        <td colspan="4" align="center"> No Data Found </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                    <q-table v-if="customer.payment.length != 0" :data="customer.payment" hide-bottom :columns="paymentcolumns" row-key="name" class="table-view">
+                      <q-tr slot="body" slot-scope="props" :props="props">
+                        <q-td key="action" :props="props" >
+                          <q-btn @click="viewPayment(props.row)" round color="black" icon="print"/>
+                        </q-td>
+                        <q-td key="name" :props="props" >
+                          {{props.row.customerSubscription.name}}
+                        </q-td>
+                        <q-td key="amount" :props="props" >
+                          {{props.row.amount | showPrice}}
+                        </q-td>
+                        <q-td key="paid_at" :props="props" >
+                          {{props.row.paid_at | momentDate}}
+                        </q-td>
+                      </q-tr>
+                    </q-table>
+                  </q-card-main>
+                </q-card>
+              </div>              
+            </div>
           </div>
         </div>
       </div>
+
     </div>
 
     <q-modal no-esc-dismiss no-backdrop-dismiss class="smart-model-view" v-model="subscriptionView" :content-css="{ minWidth: '50vw'}">
@@ -420,6 +465,32 @@ export default {
           align: 'left',
         },
       ],
+      paymentcolumns: [
+        {
+          name: 'action',
+          required: true,
+          label: 'Action',
+          align: 'left',
+        },
+        {
+          name: 'name',
+          required: true,
+          label: 'Name',
+          align: 'left',
+        },
+        {
+          name: 'amount',
+          required: true,
+          label: 'Amount',
+          align: 'left',
+        },
+        {
+          name: 'paid_at',
+          required: true,
+          label: 'Paid On',
+          align: 'left',
+        }
+      ],
        pagination: {
         sortBy: null,
         descending: true,
@@ -492,7 +563,7 @@ export default {
         .get('customers/'+this.customerID)
         .then(function(response) {
           self.customer = response.data.data;
-          //console.log(response.data.data)
+          console.log(response.data.data)
         })
         .catch(function(error) {
           console.log("customer get data error---",error);
@@ -502,6 +573,10 @@ export default {
     viewSubscription(subscription){
       this.singleSubscription = subscription
       this.subscriptionView = true
+    },
+
+    viewPayment(payment){
+      console.log(payment)
     },
 
     addPayment(subscription){
