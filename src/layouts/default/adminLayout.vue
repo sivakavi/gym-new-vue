@@ -25,7 +25,7 @@
                 <q-list link>
                    <q-item>
                     <q-item-main>
-                      <router-link label to="/">Log Out</router-link>
+                      <q-item-main @click.native="logout()" label="Log Out"/>
                     </q-item-main>
                   </q-item>
                 </q-list>
@@ -51,7 +51,7 @@
           <q-item-main label="Dashboard"/>
         </q-item>
         <q-item class="list-items" @click.native="$router.push('/admin/subscriptoin-list')">
-          <q-item-side icon="list" />
+          <q-item-side icon="fitness_center" />
           <q-item-main label="Subscription" />
         </q-item>
         <q-item class="list-items" @click.native="$router.push('/admin/stafflist')">
@@ -61,6 +61,18 @@
         <q-item class="list-items" @click.native="$router.push('/admin/customer-list')">
           <q-item-side icon="wc" />
           <q-item-main label="Customer" />
+        </q-item>
+        <q-item class="list-items" @click.native="$router.push('/admin/payment-report')">
+          <q-item-side icon="attach_money" />
+          <q-item-main label="Payment Report" />
+        </q-item>
+        <q-item class="list-items" @click.native="$router.push('/admin/customer-report')">
+          <q-item-side icon="show_chart" />
+          <q-item-main label="Customer Report" />
+        </q-item>
+        <q-item class="list-items" @click.native="logout()">
+          <q-item-side icon="lock" />
+          <q-item-main label="Logout" />
         </q-item>
       </q-list>
       </div>
@@ -95,6 +107,13 @@ export default {
         this.$q.loading.hide();
       }, 500);
     },
+
+    logout(){
+      localStorage.removeItem("authtoken")
+      localStorage.removeItem("userDetail")
+        this.$router.push("/");
+    }
+
   },
 
   created(){

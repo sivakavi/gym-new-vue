@@ -21,6 +21,8 @@ export default [
       { path: 'customer/:id', component: () => import('pages/admin/customerProfile') },
       { path: 'subscriptoin-list', component: () => import('pages/admin/subscriptionList') },
       { path: 'create-subscription', component: () => import('pages/admin/addSubscription') },
+      { path: 'customer-report', component: () => import('pages/admin/customerReport') },
+      { path: 'payment-report', component: () => import('pages/admin/paymentReport') },
     ]
   },
 
@@ -34,6 +36,8 @@ export default [
       { path: 'edit-customer/:id', component: () => import('pages/staff/editCustomer') },
       { path: 'customer/:id', component: () => import('pages/staff/customerProfile') },
       { path: 'subscriptoin-list', component: () => import('pages/staff/subscriptionList') },
+      { path: 'customer-report', component: () => import('pages/staff/customerReport') },
+      { path: 'payment-report', component: () => import('pages/staff/paymentReport') },
     ]
   },
   
