@@ -96,6 +96,8 @@ export default {
             //if(data.user.roles[0].name === 'admin'){
             if(data.role === 'admin'){
               self.$router.push('/admin/dashboard')
+            }else if(data.role === 'staff'){
+              self.$router.push('/staff/dashboard')
             }
         })
         .catch(function (error) {

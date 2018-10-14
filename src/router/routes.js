@@ -23,6 +23,19 @@ export default [
       { path: 'create-subscription', component: () => import('pages/admin/addSubscription') },
     ]
   },
+
+  {
+    path: '/staff',
+    component: () => import('layouts/default/staffLayout'),
+    children: [
+      { path: 'dashboard', component: () => import('pages/staff/dashboard') },
+      { path: 'customer-list', component: () => import('pages/staff/customerList') },
+      { path: 'create-customer', component: () => import('pages/staff/createCustomer') },
+      { path: 'edit-customer/:id', component: () => import('pages/staff/editCustomer') },
+      { path: 'customer/:id', component: () => import('pages/staff/customerProfile') },
+      { path: 'subscriptoin-list', component: () => import('pages/staff/subscriptionList') },
+    ]
+  },
   
   { // Always leave this as last one
     path: '*',
