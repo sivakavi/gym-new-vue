@@ -25,7 +25,7 @@ module.exports = function (ctx) {
         API: JSON.stringify('http://api.matrix-gym.in/api/')
       }
       : {
-        API: JSON.stringify(process.env.APP_API_URL)
+        API: JSON.stringify('http://api.matrix-gym.in/api/')
       },
       // vueRouterMode: 'history',
       // vueCompiler: true,
