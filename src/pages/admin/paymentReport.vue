@@ -27,6 +27,7 @@
       <q-card>
         <q-card-title class="card-header">
           Payment Report
+          <span style="float:right"> Total Amount : {{totalAmount}}</span>
         </q-card-title>
         <q-card-separator />
         <q-card-main>
@@ -103,7 +104,7 @@ export default {
         },
         {
           name: 'amount',
-          label: 'Amount',
+          label: 'Paid Amount',
           align: 'left',
           sortable: false
         },
@@ -129,7 +130,8 @@ export default {
       staff: 'all',
       dos: '',
       doe: '',
-      maxDay: ''
+      maxDay: '',
+      totalAmount: 0
     }
   },
 
@@ -193,6 +195,7 @@ export default {
           .get(url)
           .then(function(response) {
             self.paymentList = response.data.data;
+            self.calculateTotal(self.paymentList);
           })
           .catch(function(error) {
             console.log("payment table get data error---",error);
@@ -204,6 +207,15 @@ export default {
         })
       }
     },
+
+    calculateTotal(paymentlist){
+      let finalAmount = 0
+      paymentlist.forEach(function(element){
+        let floatAmount = parseFloat(element.amount)
+        finalAmount = finalAmount + floatAmount
+      })
+      this.totalAmount = finalAmount
+    }
 
   },
 
