@@ -13,7 +13,7 @@
             </div>
             <div>
               <q-field icon="lock">
-                <q-input type="password"  placeholder="Password" v-model="form.password" />
+                <q-input type="password"  placeholder="Password" v-model="form.password" @keyup.enter.native="loginSubmit" />
                 <span class="form-group__error" v-if="$v.form.password.$error && !$v.form.password.required">Field is required.</span>
               </q-field>
             </div>
