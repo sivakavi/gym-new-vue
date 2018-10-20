@@ -16,6 +16,7 @@
     "moment-timezone": "^0.5.21",
     "vue-chartjs": "^3.3.1",
     "vue-i18n": "^7.3.3",
+    "vue-webcam": "^2.0.4",
     "vuejs-auto-complete": "^0.6.5",
     "vuelidate": "^0.7.4"
   },

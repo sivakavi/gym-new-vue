@@ -17,17 +17,21 @@
               </q-card-title>
               <q-card-separator />
               <q-card-main>
-                <div v-if="customer.gender=='male'" class="profile-userpic">
-                  <img :src="malePicture" class="img-responsive" alt="">
-                </div>
-                <div v-if="customer.gender=='female'" class="profile-userpic">
-                  <img :src="femalePicture" class="img-responsive" alt="">
-                </div>
-                <div v-if="customer.gender=='other'" class="profile-userpic">
-                  <img :src="otherPicture" class="img-responsive" alt="">
+                <div>
+                  <div v-if="customer.gender=='male'" class="profile-userpic">
+                    <img :src="malePicture" class="img-responsive" alt="">
+                  </div>
+                  <div v-if="customer.gender=='female'" class="profile-userpic">
+                    <img :src="femalePicture" class="img-responsive" alt="">
+                  </div>
+                  <div v-if="customer.gender=='other'" class="profile-userpic">
+                    <img :src="otherPicture" class="img-responsive" alt="">
+                  </div>
                 </div>
                 <div class="profile-usertitle">
                   <div class="profile-usertitle-name"> {{customer.fname}} {{customer.lname}} </div>
+                  <br/>
+                  <q-btn @click="photoModalOpen" color="indigo" label="Add Photo" icon="add_a_photo" />
                 </div>
                 <ul class="list-group list-group-unbordered">
                   <li class="list-group-item">
@@ -366,6 +370,43 @@
       </q-card>
     </q-modal>
 
+    <q-modal no-esc-dismiss no-backdrop-dismiss class="smart-model-view" v-model="photoModal" :content-css="{ minWidth: '50vw'}">
+      <q-card>
+        <q-card-title class="model-header">
+          <div class="model-title"> Add Customer Photo</div>
+          <q-btn @click="photoModal = false" flat icon="clear" class="header-btn" color="white" slot="right"></q-btn>
+        </q-card-title>
+        <q-card-main class="model-main">
+          <div class="row">
+            <div class="col-lg-6">
+              <div>
+                <span>Camara</span>
+              </div>
+              <div>
+                <vue-webcam ref='webcam' width="225" height="225"></vue-webcam>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div>
+                <span>Taken Photo</span>
+              </div>
+              <div class="camara">
+                <img :src="takenPhoto" alt=""/>
+              </div>
+            </div>
+          </div>
+        </q-card-main>
+       <q-card-actions class="model-footer border-1px">
+          <div style="width: 100%">
+            <div class="float-right">
+              <q-btn color="indigo" label="Take Photo"/>
+              <q-btn color="green" label="Update Photo"/>
+            </div>
+          </div>
+        </q-card-actions>
+      </q-card>
+    </q-modal>
+
   </q-page>
 </template>
 
@@ -393,9 +434,12 @@ import {
   numericWithDot
 } from 'src/services/shared/customValidation.js'
 
+import VueWebcam from 'vue-webcam';
+
 export default {
   name: 'CustomerProfile',
   components: {
+    VueWebcam
   },
   data () {
     return {
@@ -508,6 +552,8 @@ export default {
       paymentAddView: false,
       paymentAmount: '',
       paymentDate: '',
+      photoModal: false,
+      takenPhoto: ''
     }
   },
 
@@ -742,6 +788,11 @@ export default {
       }).catch(() => {
         
       })
+    },
+
+    photoModalOpen(){
+      console.log('open modal')
+      this.photoModal = true
     }
     
   },
@@ -783,5 +834,8 @@ export default {
 </script>
 
 <style>
-
+.camara {
+  width: 225px;
+  height: 225px;
+}
 </style>
