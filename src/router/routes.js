@@ -23,6 +23,8 @@ export default [
       { path: 'create-subscription', component: () => import('pages/admin/addSubscription') },
       { path: 'customer-report', component: () => import('pages/admin/customerReport') },
       { path: 'payment-report', component: () => import('pages/admin/paymentReport') },
+      { path: 'upcoming-expiration', component: () => import('pages/admin/upcomingExpiration') },
+      { path: 'payment-pending', component: () => import('pages/admin/paymentPending') },
     ]
   },
 
@@ -38,6 +40,8 @@ export default [
       { path: 'subscriptoin-list', component: () => import('pages/staff/subscriptionList') },
       { path: 'customer-report', component: () => import('pages/staff/customerReport') },
       { path: 'payment-report', component: () => import('pages/staff/paymentReport') },
+      { path: 'upcoming-expiration', component: () => import('pages/staff/upcomingExpiration') },
+      { path: 'payment-pending', component: () => import('pages/staff/paymentPending') },
     ]
   },
   

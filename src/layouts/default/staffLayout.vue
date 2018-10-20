@@ -62,6 +62,14 @@
           <q-item-side icon="show_chart" />
           <q-item-main label="Customer Report" />
         </q-item>
+        <q-item class="list-items" @click.native="$router.push('/staff/upcoming-expiration')">
+          <q-item-side icon="announcement" />
+          <q-item-main label="Upcoming Expiration" />
+        </q-item>
+        <q-item class="list-items" @click.native="$router.push('/staff/payment-pending')">
+          <q-item-side icon="money_off" />
+          <q-item-main label="Payment Pending" />
+        </q-item>
         <q-item class="list-items" @click.native="logout()">
           <q-item-side icon="lock" />
           <q-item-main label="Logout" />

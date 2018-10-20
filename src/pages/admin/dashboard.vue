@@ -17,10 +17,10 @@
               </div>
             </div>
           </div>
-          <div class="col-lg-4 col-md-6 col-sm-6">
+          <div @click="gotoUpcomingExpiration" class="col-lg-4 col-md-6 col-sm-6 hand-symbol">
             <div class="info-box bg-purple">
               <span class="info-box-icon push-bottom">
-                <q-icon name="list" color="white" size="40px"/>
+                <q-icon name="announcement" color="white" size="40px"/>
               </span>
               <div class="info-box-content">
                 <span class="info-box-text">Upcoming Expiration</span>
@@ -28,21 +28,51 @@
               </div>
             </div>
           </div>
-           <div @click="gotoStaff" class="col-lg-4 col-md-6 col-sm-6 hand-symbol">
+           <div @click="gotoPaymentPending" class="col-lg-4 col-md-6 col-sm-6 hand-symbol">
             <div class="info-box bg-green">
               <span class="info-box-icon push-bottom">
-                <q-icon name="people" color="white" size="40px"/>
+                <q-icon name="money_off" color="white" size="40px"/>
               </span>
               <div class="info-box-content">
-                <span class="info-box-text">Staff</span>
-                <span class="info-box-number">{{staffCount}}</span>
+                <span class="info-box-text">Payment Pending</span>
+                <span class="info-box-number">{{paymentPendingCount}}</span>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-       <!-- Satff list -->
+      <q-card>
+        <q-card-title class="card-header">
+          Payment Pending Customer
+        </q-card-title>
+        <q-card-separator />
+        <q-card-main>
+          <q-table :data="paymentPendingList" :pagination.sync="pagination" :columns="paymentPendingColumns" row-key="name" class="table-view">
+             <q-tr slot="body" slot-scope="props" :props="props">
+              <q-td key="action" :props="props" >
+                 <q-btn @click="viewCustomer(props.row.customer_id)" round color="secondary" icon="visibility"/>
+              </q-td>
+              <q-td key="regNo" :props="props" >
+                 {{props.row.customer.regno}}
+              </q-td>
+              <q-td key="name" :props="props" >
+                 {{props.row.customer.fname}} {{props.row.customer.lname}}
+              </q-td>
+              <q-td key="amount" :props="props" >
+                 {{props.row.amount | showPrice}}
+              </q-td>
+              <q-td key="balance" :props="props" >
+                 {{props.row.balance | showPrice}}
+              </q-td>
+              <q-td key="phone" :props="props" >
+                 {{props.row.customer.mobileno}}
+              </q-td>
+             </q-tr>
+          </q-table>
+        </q-card-main>
+      </q-card>
+
       <q-card>
         <q-card-title class="card-header">
           Upcoming Customer Expiration
@@ -140,10 +170,11 @@ export default {
   data () {
     return {
       upcomingExpireCount: 0,
+      paymentPendingCount: 0,
       upcomingExpireList: [],
+      paymentPendingList: [],
       birthdayReminderList: [],
       customerCount: 0,
-      staffCount: 0,
       birthdayReminderColumns: [
         {
           name: 'action',
@@ -218,6 +249,43 @@ export default {
           align: 'left',
         },
       ],
+      paymentPendingColumns: [
+        {
+          name: 'action',
+          label: 'Action',
+          align: 'left',
+        },
+        {
+          name: 'regNo',
+          required: true,
+          label: 'Reg. No',
+          align: 'left',
+        },
+        {
+          name: 'name',
+          required: true,
+          label: 'Name',
+          align: 'left',
+        },
+        {
+          name: 'amount',
+          required: true,
+          label: 'Amount',
+          align: 'left',
+        },
+        {
+          name: 'balance',
+          required: true,
+          label: 'Balance',
+          align: 'left',
+        },
+        {
+          name: 'phone',
+          required: true,
+          label: 'Mobile',
+          align: 'left',
+        },
+      ],
        pagination: {
         sortBy: null,
         descending: true,
@@ -237,8 +305,12 @@ export default {
       this.$router.push('/admin/customer-list')
     },
 
-    gotoStaff(){
-      this.$router.push('/admin/stafflist')
+    gotoUpcomingExpiration(){
+      this.$router.push('/admin/upcoming-expiration')
+    },
+
+    gotoPaymentPending(){
+      this.$router.push('/admin/payment-pending')
     },
 
     getCustomerList(){
@@ -253,20 +325,7 @@ export default {
           console.log("customer table get data error---",error);
         });
     },
-
-    getStaffList(){
-      let self = this;
-      api
-        .get('getAllUser')
-        .then(function(response) {
-          let staffList = response.data.data
-          self.staffCount = staffList.length ;
-        })
-        .catch(function(error) {
-          console.log("staff table get data error---",error);
-        });
-    },
-
+    
     getExpiringCustomerList(){
       let self = this;
       api
@@ -277,6 +336,19 @@ export default {
         })
         .catch(function(error) {
           console.log("customer expiring table get data error---",error);
+        });
+    },
+
+    getPaymentPendingCustomerList(){
+      let self = this;
+      api
+        .get('getPaymentPending')
+        .then(function(response) {
+          self.paymentPendingList = response.data.data;
+          self.paymentPendingCount = self.paymentPendingList.length
+        })
+        .catch(function(error) {
+          console.log("customer payment pending table get data error---",error);
         });
     },
 
@@ -307,12 +379,25 @@ export default {
         return date
     },
 
+    showPrice: function(price){
+      if(price){
+        if(price.indexOf(".") > -1){
+          let priceArray = price.split('.')
+          return priceArray[0]
+        }else{
+          return price
+        }
+      }else{
+        return price
+      }
+    }
+
   },
 
   created(){
     this.getCustomerList()
-    this.getStaffList()
     this.getExpiringCustomerList()
+    this.getPaymentPendingCustomerList()
     this.getBirthdayReminderList()
   }
 
