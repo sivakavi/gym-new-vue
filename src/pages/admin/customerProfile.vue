@@ -379,7 +379,7 @@
       <q-card>
         <q-card-title class="model-header">
           <div class="model-title"> Add Customer Photo</div>
-          <q-btn @click="photoModal = false" flat icon="clear" class="header-btn" color="white" slot="right"></q-btn>
+          <q-btn @click="photoModalClose" flat icon="clear" class="header-btn" color="white" slot="right"></q-btn>
         </q-card-title>
         <q-card-main class="model-main">
           <div class="row">
@@ -804,6 +804,7 @@ export default {
       this.takenPhoto = ''
       if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
           navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+              window.streamReference = stream;
               this.video.src = window.URL.createObjectURL(stream);
               this.video.play();
           });
@@ -815,6 +816,23 @@ export default {
           message: 'Cannot take picture'
         })
       }
+    },
+
+    photoModalClose(){
+      this.photoModal = false
+      this.awayPage()
+    },
+
+    awayPage(){
+      window.streamReference.getAudioTracks().forEach(function(track) {
+        track.stop();
+      });
+
+      window.streamReference.getVideoTracks().forEach(function(track) {
+          track.stop();
+      });
+
+      window.streamReference = null;
     },
 
     takePhoto(){
@@ -850,7 +868,7 @@ export default {
               message: 'Photo updated successfully'
           })
           self.getCustomer()
-          self.photoModal = false
+          self.photoModalClose()
         })
         .catch(function (error) {
           self.$q.notify({
@@ -901,6 +919,8 @@ export default {
     this.paymentDate = today;
     this.getCustomer()
     this.getSubscriptionList()
+
+    // SELECT DAY(doj) DAY, COUNT(*) COUNT FROM customer WHERE YEAR(doj)=2018 AND MONTH(doj)=05 GROUP BY DAY(doj) ORDER BY DAY(doj)
   }
   
 }
