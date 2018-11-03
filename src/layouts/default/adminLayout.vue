@@ -78,6 +78,10 @@
           <q-item-side icon="money_off" />
           <q-item-main label="Payment Pending" />
         </q-item>
+        <q-item class="list-items" @click.native="$router.push('/admin/customer-yearly-chart')">
+          <q-item-side icon="bar_chart" />
+          <q-item-main label="Customer Chart" />
+        </q-item>
         <q-item class="list-items" @click.native="logout()">
           <q-item-side icon="lock" />
           <q-item-main label="Logout" />
