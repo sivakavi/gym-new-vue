@@ -17,17 +17,26 @@
               </q-card-title>
               <q-card-separator />
               <q-card-main>
-                <div v-if="customer.gender=='male'" class="profile-userpic">
-                  <img :src="malePicture" class="img-responsive" alt="">
+                <div v-if="!customer.photo||customer.photo==''">
+                  <div v-if="customer.gender=='male'" class="profile-userpic">
+                    <img :src="malePicture" class="img-responsive" alt="">
+                  </div>
+                  <div v-if="customer.gender=='female'" class="profile-userpic">
+                    <img :src="femalePicture" class="img-responsive" alt="">
+                  </div>
+                  <div v-if="customer.gender=='other'" class="profile-userpic">
+                    <img :src="otherPicture" class="img-responsive" alt="">
+                  </div>
                 </div>
-                <div v-if="customer.gender=='female'" class="profile-userpic">
-                  <img :src="femalePicture" class="img-responsive" alt="">
-                </div>
-                <div v-if="customer.gender=='other'" class="profile-userpic">
-                  <img :src="otherPicture" class="img-responsive" alt="">
+                <div v-if="customer.photo">
+                   <div style="padding: 0px 42px;">
+                    <img :src="customer.photo" class="img-responsive" alt="">
+                  </div>
                 </div>
                 <div class="profile-usertitle">
                   <div class="profile-usertitle-name"> {{customer.fname}} {{customer.lname}} </div>
+                  <br/>
+                  <q-btn @click="photoModalOpen" color="indigo" label="Add Photo" icon="add_a_photo" />
                 </div>
                 <ul class="list-group list-group-unbordered">
                   <li class="list-group-item">
@@ -366,6 +375,45 @@
       </q-card>
     </q-modal>
 
+    <q-modal no-esc-dismiss no-backdrop-dismiss class="smart-model-view" v-model="photoModal" :content-css="{ minWidth: '50vw'}">
+      <q-card>
+        <q-card-title class="model-header">
+          <div class="model-title"> Add Customer Photo</div>
+          <q-btn @click="photoModalClose" flat icon="clear" class="header-btn" color="white" slot="right"></q-btn>
+        </q-card-title>
+        <q-card-main class="model-main">
+          <div class="row">
+            <div class="col-lg-6">
+              <div>
+                <span>Camara</span>
+              </div>
+              <div>
+                <!-- <vue-webcam ref='webcam' width="225" height="225"></vue-webcam> -->
+                <video ref="video" width="225" height="225" autoplay></video>
+                <canvas ref="canvas" width="225" height="225" style="display: none"></canvas>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div>
+                <span>Taken Photo</span>
+              </div>
+              <div class="camara">
+                <img :src="takenPhoto" alt=""/>
+              </div>
+            </div>
+          </div>
+        </q-card-main>
+       <q-card-actions class="model-footer border-1px">
+          <div style="width: 100%">
+            <div class="float-right">
+              <q-btn color="indigo" @click="takePhoto" label="Take Photo"/>
+              <q-btn color="green" @click="updatePhoto" label="Update Photo"/>
+            </div>
+          </div>
+        </q-card-actions>
+      </q-card>
+    </q-modal>
+    
   </q-page>
 </template>
 
@@ -393,9 +441,12 @@ import {
   numericWithDot
 } from 'src/services/shared/customValidation.js'
 
+import VueWebcam from 'vue-webcam';
+
 export default {
   name: 'CustomerProfile',
   components: {
+    VueWebcam
   },
   data () {
     return {
@@ -508,6 +559,10 @@ export default {
       paymentAddView: false,
       paymentAmount: '',
       paymentDate: '',
+      photoModal: false,
+      takenPhoto: '',
+      video: {},
+      canvas: {},
     }
   },
 
@@ -742,6 +797,89 @@ export default {
       }).catch(() => {
         
       })
+    },
+
+    photoModalOpen(){
+      this.video = this.$refs.video;
+      this.takenPhoto = ''
+      if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+            window.streamReference = stream;
+            this.video.src = window.URL.createObjectURL(stream);
+            this.video.play();
+          });
+          this.photoModal = true
+      }else{
+        this.photoModal = false
+        this.$q.notify({
+          position: "top",
+          message: 'Cannot take picture'
+        })
+      }
+    },
+
+    photoModalClose(){
+      this.photoModal = false
+      this.awayPage()
+    },
+    
+    awayPage(){
+      window.streamReference.getAudioTracks().forEach(function(track) {
+        track.stop();
+      });
+       window.streamReference.getVideoTracks().forEach(function(track) {
+          track.stop();
+      });
+       window.streamReference = null;
+    },
+
+    takePhoto(){
+      //this.takenPhoto = this.$refs.webcam.getPhoto();
+      this.canvas = this.$refs.canvas;
+      var context = this.canvas.getContext("2d").drawImage(this.video, 0, 0, 220, 165);
+      this.takenPhoto = this.canvas.toDataURL("image/png");
+    },
+
+    updatePhoto(){
+      if(this.takenPhoto){
+        let requestData = {
+          "fname": this.customer.fname,
+          "lname": this.customer.lname,
+          "dob": this.customer.dob,
+          "mobileno": this.customer.mobileno,
+          "email": this.customer.email,
+          "gender": this.customer.gender,
+          "doj": this.customer.doj,
+          "photo": '' + this.takenPhoto
+        }
+         let self = this
+        let url = 'customers/'+this.customerID
+         api
+        .put(url, requestData)
+        .then(function (response) {
+          self.$q.notify({
+              position: "top",
+              timeout: 2000,
+              type: 'positive',
+              message: 'Photo updated successfully'
+          })
+          self.getCustomer()
+          self.photoModalClose()
+        })
+        .catch(function (error) {
+          self.$q.notify({
+              position: "top",
+              timeout: 2000,
+              message: 'Something went wrong !!'
+          })
+        });
+      }else{
+        this.$q.notify({
+          position: "top",
+          message: 'Take picture first then update'
+        })
+      }
+      
     }
     
   },
@@ -783,5 +921,11 @@ export default {
 </script>
 
 <style>
+
+.camara {
+  width: 225px;
+  height: 225px;
+  padding: 30px 0px;
+}
 
 </style>
