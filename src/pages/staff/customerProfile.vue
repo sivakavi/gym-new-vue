@@ -83,6 +83,7 @@
                         <th>Action</th>
                         <th>Name</th>
                         <th>Amount</th>
+                        <th>Discount</th>
                         <th>Balance</th>
                         <th>Duration (Months)</th>
                         <th>Start</th>
@@ -90,7 +91,7 @@
                       </tr>
                       <tbody>
                       <tr>
-                        <td colspan="7" align="center"> No Data Found </td>
+                        <td colspan="8" align="center"> No Data Found </td>
                       </tr>
                       </tbody>
                     </table>
@@ -106,6 +107,9 @@
                         </q-td>
                         <q-td key="amount" :props="props" >
                           {{props.row.amount | showPrice}}
+                        </q-td>
+                        <q-td key="discount" :props="props" >
+                          {{props.row.discount | showPrice}}
                         </q-td>
                         <q-td key="balance" :props="props" >
                           {{props.row.balance | showPrice}}
@@ -492,6 +496,12 @@ export default {
           align: 'left',
         },
         {
+          name: 'discount',
+          required: true,
+          label: 'Discount',
+          align: 'left',
+        },
+        {
           name: 'balance',
           required: true,
           label: 'Balance',
@@ -616,7 +626,6 @@ export default {
         .get('customers/'+this.customerID)
         .then(function(response) {
           self.customer = response.data.data;
-          console.log(response.data.data)
         })
         .catch(function(error) {
           console.log("customer get data error---",error);
