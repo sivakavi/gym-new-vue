@@ -209,6 +209,17 @@
             <div class="form-group">
                 <div class="row gutter-sm">
                   <div class="col-md-3">
+                    <label>Discount : </label>
+                  </div>
+                <div class="col-md-5">
+                  <span>{{singleSubscription.discount | showPrice}}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+                <div class="row gutter-sm">
+                  <div class="col-md-3">
                     <label>Balance : </label>
                   </div>
                 <div class="col-md-5">
@@ -285,9 +296,21 @@
                   <label class="control-label">Amount</label>
                 </div>
                 <div class="col-md-6">
-                  <q-input class="form-input" v-model="subscriptionAmount"/>
+                  <q-input readonly class="form-input" v-model="subscriptionAmount"/>
                   <span class="form-group__error" v-if="$v.subscriptionAmount.$error && !$v.subscriptionAmount.required">Field is required.</span>
                   <span class="form-group__error" v-if="$v.subscriptionAmount.$error && !$v.subscriptionAmount.numericWithDot">Accept numeric value only.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="row gutter-sm">
+                <div class="col-md-4">
+                  <label class="control-label">Discount</label>
+                </div>
+                <div class="col-md-6">
+                  <q-input class="form-input" v-model="discountAmount"/>
+                  <span class="form-group__error" v-if="$v.discountAmount.$error && !$v.discountAmount.numericWithDot">Accept numeric value only.</span>
                 </div>
               </div>
             </div>
@@ -563,6 +586,7 @@ export default {
       subscriptionList: [],
       subscriptionOptions: [],
       subscriptionAmount: '',
+      discountAmount: '',
       subscriptionDuration: '',
       subscriptionStart: '',
       subscriptionEnd: '',
@@ -587,6 +611,9 @@ export default {
             },
             subscriptionAmount:{
               required,
+              numericWithDot
+            },
+            discountAmount:{
               numericWithDot
             },
             subscriptionStart:{
@@ -614,8 +641,10 @@ export default {
       this.subscriptionDuration = ''
       this.subscriptionStart = ''
       this.subscriptionEnd = ''
+      this.discountAmount = ''
       this.$v.selectedSubscription.$reset()
       this.$v.subscriptionAmount.$reset()
+      this.$v.discountAmount.$reset()
       this.$v.subscriptionStart.$reset()
       this.subscriptionAdd = true
     },
@@ -704,6 +733,25 @@ export default {
         })
         return
       }
+
+      if(this.discountAmount){
+        this.$v.discountAmount.$touch()
+        if (this.$v.discountAmount.$error) {
+          this.$q.notify({
+            position: "top",
+            message: "Please review fields again."
+          })
+          return
+        }
+      }
+
+      let balanceAmount = 0
+
+      if(this.discountAmount){
+        balanceAmount = parseFloat(this.subscriptionAmount) - parseFloat(this.discountAmount)
+      }else{
+        balanceAmount = parseFloat(this.subscriptionAmount)
+      }
       
       let self = this
       let url = "customersubscriptions"
@@ -711,6 +759,8 @@ export default {
         subscription_id: ""+this.selectedSubscription.id,
         customer_id: this.customerID,
         amount: this.subscriptionAmount,
+        discount: this.discountAmount,
+	      balance: balanceAmount,
         doj: moment(this.subscriptionStart).format('YYYY-MM-DD')
       }
 
